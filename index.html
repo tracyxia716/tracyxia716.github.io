@@ -178,7 +178,10 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h1 id="1-题目"><a href="#1-题目" class="headerlink" title="1.题目"></a>1.题目</h1><p><img src="/2019/03/09/螺旋矩阵/02601909-2698-479E-8391-A5C280C5A150.png" alt></p>
+<h1 id="2-分析"><a href="#2-分析" class="headerlink" title="2.分析"></a>2.分析</h1><p><img src="/2019/03/09/螺旋矩阵/5F192397-741D-4B72-87BE-50AD13492FBC.png" alt><br>上图展示了一轮完整的顺时针螺旋遍历的过程,整个过程可以分为如图所示的四个阶段，而这四个阶段我们则只需要考虑，是行还是列在变化，是递增还是递减。所以代码当中分别用<em> isHoriOrVer<strong>和</strong> isIncrease</em>两个布尔变量来分别表示。<br>同时，我们需要记录下来我们遍历过的行和列。因为没一轮遍历都是先遍历最靠前的行（列），再遍历最后靠后的行（列）。所以这里我们分别用left,right,top,bottom来分别表示。</p>
+<h1 id="3-代码实现"><a href="#3-代码实现" class="headerlink" title="3.代码实现"></a>3.代码实现</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;Integer&gt; spiralOrder(int[][] matrix) &#123;</span><br><span class="line">    if (matrix.length != 0 &amp;&amp; matrix[0].length != 0) &#123;</span><br><span class="line">        //横向还是纵向，初始是横向</span><br><span class="line">        boolean isHoriOrVer = true;</span><br><span class="line"></span><br><span class="line">        //是否是增长序列，初始是增长</span><br><span class="line">        boolean isIncrease = true;</span><br><span class="line"></span><br><span class="line">        int top = 0;</span><br><span class="line">        int bottom = matrix.length - 1;</span><br><span class="line"></span><br><span class="line">        int left = 0;</span><br><span class="line">        int right = matrix[0].length - 1;</span><br><span class="line">		  //默认从第一行第一列开始</span><br><span class="line">        int row = top;</span><br><span class="line">        int column = left;</span><br><span class="line"></span><br><span class="line">        int length = matrix.length * matrix[0].length;</span><br><span class="line">        List&lt;Integer&gt; list = new ArrayList&lt;&gt;(length);</span><br><span class="line"></span><br><span class="line">        for (int i = 0; i &lt; length; i++) &#123;</span><br><span class="line">            if (isHoriOrVer) &#123;</span><br><span class="line">                if (isIncrease) &#123;</span><br><span class="line">                    list.add(matrix[row][column++]);</span><br><span class="line">                    if (column &gt; right) &#123;</span><br><span class="line">                        row++;</span><br><span class="line">                        top++;</span><br><span class="line">                        column = right;</span><br><span class="line">                        isHoriOrVer = false;</span><br><span class="line">                        isIncrease = true;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    list.add(matrix[row][column--]);</span><br><span class="line">                    if (column &lt; left) &#123;</span><br><span class="line">                        row--;</span><br><span class="line">                        bottom--;</span><br><span class="line">                        column = left;</span><br><span class="line">                        isHoriOrVer = false;</span><br><span class="line">                        isIncrease = false;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                if (isIncrease) &#123;</span><br><span class="line">                    list.add(matrix[row++][column]);</span><br><span class="line">                    if (row &gt; bottom) &#123;</span><br><span class="line">                        column--;</span><br><span class="line">                        right--;</span><br><span class="line">                        row = bottom;</span><br><span class="line">                        isIncrease = false;</span><br><span class="line">                        isHoriOrVer = true;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; else &#123;</span><br><span class="line">                    list.add(matrix[row--][column]);</span><br><span class="line">                    if (row &lt; top) &#123;</span><br><span class="line">                        column++;</span><br><span class="line">                        left++;</span><br><span class="line">                        row = top;</span><br><span class="line">                        isHoriOrVer = true;</span><br><span class="line">                        isIncrease = true;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        return list;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return new ArrayList&lt;&gt;();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
       
 
       
@@ -210,68 +213,6 @@
       
         <p class="article-more-link">
           <a class="article-more-a" href="/2019/03/09/螺旋矩阵/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-Demo" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/24/Demo/">Demo</a>
-    </h1>
-  
-
-        
-        <a href="/2018/07/24/Demo/" class="archive-article-date">
-  	<time datetime="2018-07-24T02:15:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-24</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2018/07/24/Demo/">展开全文 >></a>
         </p>
       
 
