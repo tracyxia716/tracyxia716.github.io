@@ -59,6 +59,8 @@
 	        
 				<li><a href="/tags/算法">算法</a></li>
 	        
+				<li><a href="/tags/Android基础">Android基础</a></li>
+	        
 			</ul>
 		</nav>
 		<nav class="header-smart-menu">
@@ -117,6 +119,8 @@
 			
 				
 			
+				
+			
 			
 			
 			<nav class="header-nav">
@@ -137,11 +141,13 @@
 				<ul style="width: 70%">
 				
 				
-					<li style="width: 33.333333333333336%"><a href="/">主页</a></li>
+					<li style="width: 25%"><a href="/">主页</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/leetcode/">leetcode</a></li>
+					<li style="width: 25%"><a href="/tags/leetcode/">leetcode</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/算法">算法</a></li>
+					<li style="width: 25%"><a href="/tags/算法">算法</a></li>
+		        
+					<li style="width: 25%"><a href="/tags/Android基础">Android基础</a></li>
 		        
 				</ul>
 			</nav>
@@ -157,6 +163,102 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-Android对象序列化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/24/Android对象序列化/">Android对象序列化</a>
+    </h1>
+  
+
+        
+        <a href="/2019/03/24/Android对象序列化/" class="archive-article-date">
+  	<time datetime="2019-03-24T13:29:22.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="什么是对象的序列化"><a href="#什么是对象的序列化" class="headerlink" title="什么是对象的序列化"></a>什么是对象的序列化</h1><p>对象序列化就是将对象的状态信息转化为可以存储或者传输的形式的过程，这些信息包括Class信息、继承关系信息、访问权限、变量类型以及数值信息等。<br>将序列化对象写入文件后，也可以从文件中读取出来并对其进行反序列化操作。通过反序列化将对象的信息全部获取，然后可以在内存中根据这些信息新建对象。<br>Java提供了Seriabizable接口来实现对象序列化。当对象在保存对象时，会把其状态保存为一组字节，反序列化时再将这些还原成对象再内存当中重新创建。需要注意的是<strong>类中的静态变量是不会被序列化的</strong>，因为它不属于对象而是属于类。<br>虽然Java提供了Serializable接口来实现，但是它的性能较低，Android则重新设计了一套更加轻量且高效的对象序列化和反序列化的机制也就是Parcelable。下面我们就针对Serializable和Parcelable来分别进行介绍。</p>
+<h1 id="Serializable"><a href="#Serializable" class="headerlink" title="Serializable"></a>Serializable</h1><h2 id="Serializable接口的使用"><a href="#Serializable接口的使用" class="headerlink" title="Serializable接口的使用"></a>Serializable接口的使用</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">public class User implements Serializable &#123;</span><br><span class="line"></span><br><span class="line">    private String name;</span><br><span class="line"></span><br><span class="line">    private int age;</span><br><span class="line"></span><br><span class="line">    private transient String gend;</span><br><span class="line"></span><br><span class="line">    private static final long serialVersionUID= -34975938475934934L;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public String getGend() &#123;</span><br><span class="line">        return gend;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setGend(String gend) &#123;</span><br><span class="line">        this.gend = gend;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getName() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setName(String name) &#123;</span><br><span class="line">        this.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getAge() &#123;</span><br><span class="line">        return age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setAge(int age) &#123;</span><br><span class="line">        this.age = age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//序列化</span><br><span class="line">ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(&quot;Serializable.txt&quot;));</span><br><span class="line">outputStream.writeObject(user);</span><br><span class="line">outputStream.close();</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">//反序列化</span><br><span class="line">ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(&quot;Serializable.txt&quot;));</span><br><span class="line">User u = (User) inputStream.readObject();</span><br><span class="line">inputStream.close();</span><br></pre></td></tr></table></figure>
+<p>对应的结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">序列化前：User&#123;name=&apos;Tom&apos;, age=25, gend=&apos;male&apos;&#125;</span><br><span class="line">序列化后：User&#123;name=&apos;Tom&apos;, age=25, gend=&apos;null&apos;&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="Serializable使用说明"><a href="#Serializable使用说明" class="headerlink" title="Serializable使用说明"></a>Serializable使用说明</h2><h3 id="transient关键字"><a href="#transient关键字" class="headerlink" title="transient关键字"></a>transient关键字</h3><p>该关键字的作用就是阻止该变量被序列化到文件中，在被反序列化后transient变量的值被设为初始值，例如int是0，bool值是false，对象类型的则是null。从上面的实例中我们也能看出，gend变量最终被反序列化以后的值是null。</p>
+<h3 id="serialVersionUID（序列化ID）"><a href="#serialVersionUID（序列化ID）" class="headerlink" title="serialVersionUID（序列化ID）"></a>serialVersionUID（序列化ID）</h3><p>Java虚拟机是否允许反序列化，不仅取决于反序列化类的路径和功能代码中使用的类是否是一致的。同时也会比较两个类的serialVersionUID是否一致。<br>假如我们不指定seriaVersionUID，先将User序列化，然后再将User反序列化我们就会得到如下报错：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">java.io.InvalidClassException: com.example.User; local class incompatible: stream classdesc serialVersionUID = 7460070630995626692, local class serialVersionUID = -1719492402693942784</span><br><span class="line">	at java.io.ObjectStreamClass.initNonProxy(ObjectStreamClass.java:616)</span><br><span class="line">	at java.io.ObjectInputStream.readNonProxyDesc(ObjectInputStream.java:1843)</span><br><span class="line">	at java.io.ObjectInputStream.readClassDesc(ObjectInputStream.java:1713)</span><br><span class="line">	at java.io.ObjectInputStream.readOrdinaryObject(ObjectInputStream.java:2000)</span><br><span class="line">	at java.io.ObjectInputStream.readObject0(ObjectInputStream.java:1535)</span><br><span class="line">	at java.io.ObjectInputStream.readObject(ObjectInputStream.java:422)</span><br><span class="line">	at com.example.MainDemo.main(MainDemo.java:24)</span><br></pre></td></tr></table></figure></p>
+<p>原来如果我们不指定serialVersionUID的话，编译器会默认给我们指定一个。而这个值是根据类的信息入方法名称、字段名称等计算hash出来的。所以说如果类一旦发生变化，这个值就肯定会跟随者变化而变化。所以我们必须要养成良好的习惯给serialVersionUID指定值，这样才能保证类前后变化以后尽可能最大程度还原现场。</p>
+<h1 id="Parcelable"><a href="#Parcelable" class="headerlink" title="Parcelable"></a>Parcelable</h1><h2 id="Parcelable使用"><a href="#Parcelable使用" class="headerlink" title="Parcelable使用"></a>Parcelable使用</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">public class User implements Parcelable &#123;</span><br><span class="line"></span><br><span class="line">  public User() &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  private String name;</span><br><span class="line"></span><br><span class="line">  private int age;</span><br><span class="line"></span><br><span class="line">  private String gend;</span><br><span class="line"></span><br><span class="line">  private Wallet wallet;</span><br><span class="line"></span><br><span class="line">  public Wallet getWallet() &#123;</span><br><span class="line">    return wallet;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public void setWallet(Wallet wallet) &#123;</span><br><span class="line">    this.wallet = wallet;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public String getName() &#123;</span><br><span class="line">    return name;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public void setName(String name) &#123;</span><br><span class="line">    this.name = name;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public int getAge() &#123;</span><br><span class="line">    return age;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public void setAge(int age) &#123;</span><br><span class="line">    this.age = age;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public String getGend() &#123;</span><br><span class="line">    return gend;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public void setGend(String gend) &#123;</span><br><span class="line">    this.gend = gend;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Override public int describeContents() &#123;</span><br><span class="line">    return 0;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Override public void writeToParcel(Parcel dest, int flags) &#123;</span><br><span class="line">    dest.writeString(this.name);</span><br><span class="line">    dest.writeInt(this.age);</span><br><span class="line">    dest.writeString(this.gend);</span><br><span class="line">    dest.writeParcelable(this.wallet, flags);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  protected User(Parcel in) &#123;</span><br><span class="line">    this.name = in.readString();</span><br><span class="line">    this.age = in.readInt();</span><br><span class="line">    this.gend = in.readString();</span><br><span class="line">    this.wallet = in.readParcelable(Wallet.class.getClassLoader());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  public static final Creator&lt;User&gt; CREATOR= new Creator&lt;User&gt;() &#123;</span><br><span class="line">    @Override public User createFromParcel(Parcel source) &#123;</span><br><span class="line">      return new User(source);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override public User[] newArray(int size) &#123;</span><br><span class="line">      return new User[size];</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Parcelable使用说明"><a href="#Parcelable使用说明" class="headerlink" title="Parcelable使用说明"></a>Parcelable使用说明</h2><ul>
+<li><strong>writeToParcel(Parcel,int)</strong>:将当前对象写入序列化结构中，其中flags标识只有0或者1两种值。为1的时候当前对象需要作为返回值返回，不能立即释放资源，基本上所有情况都为1.</li>
+<li><strong>describeContents</strong>:返回当前对象的内容描述。如果含有文件描述符，返回1，否则返回0。几乎所有情况都为0。</li>
+<li><strong>protected 构造方法</strong>:从序列化后的对象中创建原始对象。</li>
+<li><strong>CREATOR</strong>:根据官方文档的说法，在实现Parcelable接口的嘶吼必须初始化一个非空的静态字段CREATOR实现Parcelable.Creator接口用来从Parcel中生成实例。</li>
+</ul>
+<p>总的来说序列化是通过实现writeToParcel方法来完成。反序列化操作是通过构造函数里调用各种read方法来实现。Parcelable的实现较为复杂，不如Serializable使用起来方便。但是我们也可以发现其中代码比较模板化，AndroidStudio里有对应的插件可以帮助我们快速的实现Parcelable所需要的全部方法。</p>
+<h1 id="Serializable和Parcelable对比与总结"><a href="#Serializable和Parcelable对比与总结" class="headerlink" title="Serializable和Parcelable对比与总结"></a>Serializable和Parcelable对比与总结</h1><ul>
+<li>Serializable与Parcelable之间最大的区别在于存储的媒介不同，Serializable使用I/O读写存储在硬盘上，Parcelable是直接在内存中进行读写。</li>
+<li>Serializable大量使用反射，Parcelable自己实现封送和解封操作不需要用反射，数据也是存放在Native内存中，效率更高。</li>
+</ul>
+<p>摘取一张网上对比两者之间的效率图：<br><img src="/2019/03/24/Android对象序列化/83B38795-BF45-49C9-8B0A-2C4E9F54BDD2.png" alt></p>
+<p>一般情况下我们尽可能使用Parcelable，但是如果不得不做本地持久化存储的时候就使用Serializable吧。</p>
+<h1 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h1><p><a href="https://www.hollischuang.com/archives/1140" target="_blank" rel="noopener">深入分析Java的序列化和反序列化</a><br><a href="https://time.geekbang.org/column/article/76985" target="_blank" rel="noopener">张绍文 Android开发高手课</a><br><a href="https://juejin.im/post/5a24fd8151882531ea651c37" target="_blank" rel="noopener">Serializable 都这么牛逼了，Parcelable，我还要你何用？</a><br><a href="https://www.jianshu.com/p/3e3d86716f76" target="_blank" rel="noopener">JAVA序列化原理解析</a><br><a href="https://juejin.im/post/5a3b24ab6fb9a04515440bd7" target="_blank" rel="noopener">Parcelable最强解析</a></p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">Android基础</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/03/24/Android对象序列化/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-螺旋矩阵" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -333,6 +435,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
             <input type="checkbox" q-on="click:toggleTag(e)" q-attr="checked:showTags">
           </label>
           <ul class="article-tag-list" q-show="showTags">
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">Android基础</a>
+              </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">leetcode</a>
